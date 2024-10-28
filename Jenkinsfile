@@ -22,19 +22,27 @@ pipeline {
         }
 
         stage('Test') {
-            agent {
-                docker {
-                    image 'node:18-alpine'
-                    reuseNode true
-                }
-            }
-            steps {
-                echo 'Test stage'
-
-                sh '''
-                    test -f build/index.html
-                    npm test
-                '''
+            parallel {
+              stage('Unit Test') {
+                  steps {
+                      sh '''
+                          test -f build/index.html
+                      '''
+                  }
+              }
+              stage('Jest Test') {
+                  agent {
+                      docker {
+                          image 'node:18-alpine'
+                          reuseNode true
+                      }
+                  }
+                  steps {
+                      sh '''
+                          npm test
+                      '''
+                  }
+              }
             }
         }
     }
