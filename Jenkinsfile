@@ -42,7 +42,7 @@ pipeline {
             }
 
             steps {
-                withCredentials([usernamePassword(credentialsId: 'my-aws', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
+                withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'uniumnz@outlook.com', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                     sh '''
                         docker build -t $AWS_ECR_REPO/$APP_NAME:$REACT_APP_VERSION .
                         docker login -u AWS -p $AWS_SECRET_ACCESS_KEY $AWS_ECR_REPO
@@ -62,7 +62,7 @@ pipeline {
             }
 
             steps {
-                withCredentials([usernamePassword(credentialsId: 'my-aws', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
+                withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'uniumnz@outlook.com', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                     sh '''
                         aws --version
                         yum install jq -y
