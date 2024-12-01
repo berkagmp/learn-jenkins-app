@@ -45,7 +45,7 @@ pipeline {
                 withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'uniumnz@outlook.com', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                     sh '''
                         docker build -t $AWS_ECR_REPO/$APP_NAME:$REACT_APP_VERSION .
-                        docker login -u AWS -p $AWS_SECRET_ACCESS_KEY $AWS_ECR_REPO
+                        aws ecr get-login-password | docker login --username AWS --password-stdin $AWS_ECR_REPO
                         docker push $AWS_ECR_REPO/$APP_NAME:$REACT_APP_VERSION
                     '''
                 }
