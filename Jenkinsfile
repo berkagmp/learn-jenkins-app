@@ -8,6 +8,7 @@ pipeline {
         AWS_ECS_CLUSTER = 'LearnJekinsApp-Cluster'
         AWS_ECS_SERVICE_PROD = 'LearnJenkinsApp-Serice-Prod'
         AWS_ECS_TD_PROD = 'LearnJenkinsApp-TaskDefinition-Prod'
+        AWS_ECR_REPO = '686255985767.dkr.ecr.ap-southeast-2.amazonaws.com'
     }
 
     stages {
@@ -41,9 +42,13 @@ pipeline {
             }
 
             steps {
-                sh '''
-                    docker build -t $APP_NAME:$REACT_APP_VERSION .
-                '''
+                withCredentials([usernamePassword(credentialsId: 'my-aws', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
+                    sh '''
+                        docker build -t $AWS_ECR_REPO/$APP_NAME:$REACT_APP_VERSION .
+                        docker login -u AWS -p $AWS_SECRET_ACCESS_KEY $AWS_ECR_REPO
+                        docker push $AWS_ECR_REPO/$APP_NAME:$REACT_APP_VERSION
+                    '''
+                }
             }
         }
 
